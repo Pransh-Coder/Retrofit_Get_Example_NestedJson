@@ -42,9 +42,9 @@ public class RecyclerAdapterBooks extends RecyclerView.Adapter<RecyclerAdapterBo
         holder.bookAuthor.setText("Author :" + bookDetails_pojoList.get(position).getAuthor());
         Picasso.get().load(bookDetails_pojoList.get(position).getImglink()).into(holder.imageView);
 
-        /*final String name = bookDetails_pojoList.get(position).getBookName();
-        final String auth = bookDetails_pojoList.get(position).getAuthorName();
-        final String imgLink = bookDetails_pojoList.get(position).getImages();
+        final String name = bookDetails_pojoList.get(position).getTitle();
+        final String auth = bookDetails_pojoList.get(position).getAuthor();
+        final String imgLink = bookDetails_pojoList.get(position).getImglink();
 
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +55,7 @@ public class RecyclerAdapterBooks extends RecyclerView.Adapter<RecyclerAdapterBo
                 intent.putExtra("img",imgLink);
                 context.startActivity(intent);
             }
-        });*/
+        });
     }
 
     @Override
