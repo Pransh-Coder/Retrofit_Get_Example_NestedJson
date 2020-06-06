@@ -45,10 +45,14 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("MainActivity", "posts loaded from API");
 
                     book_arrayList = response.body().getBook_arrayList();
+
                     Toast.makeText(MainActivity.this, ""+book_arrayList.size(), Toast.LENGTH_SHORT).show();
 
                     adapter = new RecyclerAdapterBooks(MainActivity.this,book_arrayList);
                     recyclerView.setAdapter(adapter);
+
+                   // It is used for extracting specific keys or elements from API like "book_title" , "author" , "image"
+
                     /*for (int i=0;i<book_arrayList.size();i++){
 
                         String title = book_arrayList.get(i).getTitle();

@@ -1,5 +1,7 @@
 package com.example.retrofit_get_example_nestedjson;
 
+// It is the name of the json array for more refrence vist the API      www.mocky.io/v2/5cc008de310000440a035fdf
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
