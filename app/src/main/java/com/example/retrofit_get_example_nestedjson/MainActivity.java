@@ -11,12 +11,19 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Cache;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,7 +44,32 @@ public class MainActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Cache cache = new Cache(getCacheDir(),cacheSize);
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .cache(cache)
+                .addInterceptor(new Interceptor() {
+                    @Override
+                    public okhttp3.Response intercept(Chain chain) throws IOException {
+                        Request request = chain.request();
+                        if(!IsNetworkAvailable()){
+                            int maxStale = 60*60*24*28;     // tolerate 4 weeks stale
+                            request = request.newBuilder().header("Cache-Control", "public, only-if-cached, max-stale=" + maxStale).build();
+                        }
+                        return chain.proceed(request);
+                    }
+                })
+                .build();
+
+        //  By using this we are not going to use the ApiClient that we have created
+        Retrofit.Builder builder =new Retrofit.Builder()
+                .baseUrl("http://www.mocky.io/v2/")
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create());
+
+        Retrofit retrofit = builder.build();
+
+        ApiInterface apiInterface = retrofit.create(ApiInterface.class);
+        //ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
         boolean b = IsNetworkAvailable();
         if(!b){
