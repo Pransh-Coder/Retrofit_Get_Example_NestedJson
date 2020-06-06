@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -23,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
 
     List<Book_Array> book_arrayList = new ArrayList<>();
 
+    int cacheSize = 10*1024*1024;   // 10 MB
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +38,11 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+
+        boolean b = IsNetworkAvailable();
+        if(!b){
+            Toast.makeText(this, "Please Check your Internet Connection", Toast.LENGTH_SHORT).show();
+        }
 
         apiInterface.getBooksfromURL().enqueue(new Callback<BooksPojo>() {
             @Override
@@ -76,6 +86,12 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("MainActivity", "error loading from API");
             }
         });
+
+    }
+    public Boolean IsNetworkAvailable(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo!=null&&networkInfo.isConnected();
 
     }
 }
